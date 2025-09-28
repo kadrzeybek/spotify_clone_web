@@ -33,7 +33,7 @@ export const createSong = async(req,res,next) =>{
         const song = new Song({
             title,
             artist,
-            audiuUrl,
+            audioUrl,
             imageUrl,
             duration,
             albumId: albumId || null
@@ -68,6 +68,7 @@ export const deleteSong = async(req,res,next) =>{
         }
 
         await Song.findByIdAndDelete(id)
+
         res.status(200).json({message:"Song deleted succesfully"})
 
     } catch (error) {
@@ -78,8 +79,8 @@ export const deleteSong = async(req,res,next) =>{
 
 export const createAlbum = async(req,res,next) =>{
     try {
-        const {title, artist, releaseYear} = req.body
-        const {imageFile} = req.file
+        const { title, artist, releaseYear } = req.body
+        const { imageFile } = req.files
 
         const imageUrl = await uploadCloudinary(imageFile)
 
@@ -101,15 +102,18 @@ export const createAlbum = async(req,res,next) =>{
 export const deleteAlbum = async(req,res,next) =>{
     try {
         const { id } = req.params;
+
         await Song.deleteMany({albumId: id})
         await Album.findByIdAndDelete(id);
+
         res.status(200).json({message:"Album deleted succesfully"})
+
     } catch (error) {
         console.log("Error in deleteAlbum controller:", error)
         next(error);
     }
 }
 
-export const checkAdmin = async(neq,res,next) =>{
+export const checkAdmin = async(req,res,next) =>{
     res.status(200).json({admin:true})
 }
